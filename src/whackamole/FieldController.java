@@ -18,19 +18,12 @@ public class FieldController implements Initializable {
     @FXML
     private GridPane moleGridPane;
 
-    private ImageView[] moleImages = new ImageView[9];
+    private ImageView[] moleImages = new ImageView[Game.TOTAL_MOLES];
 
     private Image moleImage,
                   blankImage;
 
-    public boolean[] getMoleHoles(){
-        boolean[] moleHoles = new boolean[9];
-
-        for(int i = 0; i < moleImages.length; i++)
-            moleHoles[i] = (moleImages[i].getImage() == moleImage ? true : false);
-
-        return moleHoles;
-    }
+    private Game game;
 
     public void drawMoleAt(int index){
         moleImages[index].setImage(moleImage);
@@ -39,17 +32,18 @@ public class FieldController implements Initializable {
     public void handleImagePress(MouseEvent event){
         ImageView source = (ImageView) event.getTarget();
         for(int i = 0; i < moleImages.length; i++)
-            if(source == moleImages[i] && moleImages[i].getImage() == moleImage)
+            if(source == moleImages[i] && moleImages[i].getImage() == moleImage) {
                 moleImages[i].setImage(blankImage);
+                game.whackMole(i);
+            }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         blankImage = new WritableImage(50,50);
-
         moleImage = new Image("mole.png");
 
-        // Create imageviews and add them to moleGridPane
+        // Create blank image views and add them to moleGridPane
         for(int row = 0; row < 3; row++)
             for(int col = 0; col < 3; col++) {
                 ImageView view = new ImageView(blankImage);
@@ -57,11 +51,14 @@ public class FieldController implements Initializable {
                 moleGridPane.add(view, col, row);
             }
 
-        // Get references to all imageviews
+        // Get references to all image views
         ObservableList<Node> imageViews = moleGridPane.getChildren();
         for(int i = 0; i < moleImages.length; i++){
             ImageView view = (ImageView) imageViews.get(i);
             moleImages[i] = view;
         }
+
+        game = new Game(this);
+        game.start();
     }
 }

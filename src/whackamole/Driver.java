@@ -13,6 +13,7 @@ public class Driver extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("field-layout.fxml"));
         primaryStage.setTitle("Whack-A-Mole! v1.0");
         primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setOnCloseRequest( event -> System.exit(0));
         primaryStage.show();
     }
 
