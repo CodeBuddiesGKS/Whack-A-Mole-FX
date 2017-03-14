@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,6 +19,9 @@ public class FieldController implements Initializable {
     @FXML
     private GridPane moleGridPane;
 
+    @FXML
+    private Text whackCount;
+
     private Mole[] moles = new Mole[Game.TOTAL_MOLES];
 
     private Image blankImage;
@@ -25,11 +29,7 @@ public class FieldController implements Initializable {
     private Game game;
 
     public void drawMoleAt(int index){
-        System.out.println("Draw");
-        while(moles[index].isFading()){
-            System.out.println("Fading");
-        }
-        System.out.println("Remerge");
+        while(moles[index].isFading()){System.out.println("Fade");}
         moles[index].emerge();
     }
 
@@ -38,8 +38,11 @@ public class FieldController implements Initializable {
 
         for(int i = 0; i < moles.length; i++){
             if(moles[i].getImageView() == source) {
-                game.whackMole(i);
-                moles[i].whack();
+                if(!moles[i].isEmerging() && !moles[i].isFading()) {
+                    game.whackMole(i);
+                    moles[i].whack();
+                    whackCount.setText(Integer.toString(Integer.parseInt(whackCount.getText()) + 1));
+                }
             }
         }
 
@@ -57,8 +60,8 @@ public class FieldController implements Initializable {
         blankImage = new WritableImage(140,140);
 
         // Create blank image views and add them to moleGridPane
-        for(int row = 0; row < 3; row++)
-            for(int col = 0; col < 3; col++) {
+        for(int row = 0; row < Game.ROWS; row++)
+            for(int col = 0; col < Game.COLUMNS; col++) {
                 ImageView view = new ImageView(blankImage);
                 view.setOnMousePressed(event -> handleImagePress(event));
                 moleGridPane.add(view, col, row);
@@ -71,12 +74,11 @@ public class FieldController implements Initializable {
             moles[i] = new Mole(view);
         }
 
-//        for(int i = 0; i < moles.length; i++) {
-//            System.out.println("Emerging");
-//            moles[i].emerge();
-//        }
-
         game = new Game(this);
-        game.start();
+
+        for(int i = 0; i < moles.length; i++)
+            moles[i].emerge();
+
+//        game.start();
     }
 }

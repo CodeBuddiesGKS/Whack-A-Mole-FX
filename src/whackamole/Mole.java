@@ -12,16 +12,16 @@ public class Mole {
     private ImageView view;
     private Animation emerge,
                       whack,
-                      idle;
+                      idle,
+                      laugh;
 
     private boolean isFading,
                     isEmerging,
-                    isIdle;
+                    isIdle,
+                    loaded;
 
     public Mole(ImageView imageView){
         view = imageView;
-        view.setViewport(new Rectangle2D(0,0,140,140));
-
     }
 
     public ImageView getImageView(){
@@ -45,9 +45,9 @@ public class Mole {
             idle();
         });
 
+        view.setImage(null);
         view.setImage(new Image("sprites.png"));
         view.setOpacity(1.0);
-        System.out.println("Emerge");
         emerge.play();
     }
 
@@ -55,18 +55,16 @@ public class Mole {
         if(isEmerging || isFading || isIdle)
             return;
 
+        System.out.println("Idle play");
         isIdle = true;
 
         idle = new SpriteAnimation(view, Duration.millis(3000),
                 6, 6,
                 0, 1540,
                 140, 140 );
-        idle.setCycleCount(Animation.INDEFINITE);
-        idle.setOnFinished(endIdleEvent -> {
-            System.out.println("Finish idle");
-            isIdle = false;
-        });
-        System.out.println("Idle");
+        idle.setCycleCount(3);
+        idle.setOnFinished(endIdleEvent -> laugh());
+        //System.out.println("Idle");
         idle.play();
     }
 
@@ -84,7 +82,7 @@ public class Mole {
                 0,1400,
                 140, 140 );
         whack.setOnFinished(endWhackEvent -> {
-            System.out.println("Finish whack");
+            //System.out.println("Finish whack");
             FadeTransition fade = new FadeTransition(Duration.millis(1000), view);
             fade.setOnFinished(endFadeEvent -> {
                 isFading = false;
@@ -96,8 +94,35 @@ public class Mole {
             fade.play();
         });
 
-        System.out.println("Whack");
+        //System.out.println("Whack");
         whack.play();
+    }
+
+    public void laugh(){
+        if(!isIdle)
+            return;
+
+        laugh = new SpriteAnimation(view, Duration.millis(1000),
+                4, 4,
+                0, 1260,
+                140, 140 );
+        laugh.setCycleCount(3);
+        laugh.setOnFinished(endIdleEvent -> {
+            isIdle = false;
+            leave();
+        });
+        //System.out.println("Idle");
+        laugh.play();
+
+    }
+
+    public void leave(){
+        if(isIdle || isEmerging & isFading)
+            return;
+
+        emerge.setRate(-1.0);
+        emerge.setOnFinished(event -> view.setImage(null));
+        emerge.play();
     }
 
     public boolean isEmerging(){

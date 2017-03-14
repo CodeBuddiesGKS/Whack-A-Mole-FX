@@ -4,7 +4,9 @@ import java.util.Random;
 
 public class Game implements Runnable{
 
-    public static final int TOTAL_MOLES = 9;
+    public static final int ROWS = 3,
+                            COLUMNS = 5,
+                            TOTAL_MOLES = ROWS * COLUMNS;
     private static final boolean MOLE = true,
                                  NO_MOLE = false;
 
@@ -37,10 +39,9 @@ public class Game implements Runnable{
 
     @Override
     public void run(){
-        //System.out.println("Game Started");
+        System.out.println("Game Started");
 
         while(isRunning){
-            //System.out.println("Running");
             setupMoles();
 
             while(molesRemaining > 0){}
@@ -52,11 +53,11 @@ public class Game implements Runnable{
         int nextLocation;
 
         // Number of moles to set this round
-        molesRemaining = 1;//rng.nextInt(3) + 1;
+        molesRemaining = rng.nextInt(3) + 1;
 
         // Set the logical moles
         for(int i = 0; i < molesRemaining;){
-            nextLocation = 0;//rng.nextInt(9);
+            nextLocation = rng.nextInt(9);
             if(moleHoles[nextLocation] == NO_MOLE) {
                 moleHoles[nextLocation] = MOLE;
                 field.drawMoleAt(nextLocation);
