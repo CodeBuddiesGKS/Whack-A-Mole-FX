@@ -37,10 +37,10 @@ public class Game implements Runnable{
 
     @Override
     public void run(){
-        System.out.println("Game Started");
+        //System.out.println("Game Started");
 
         while(isRunning){
-            System.out.println("Running");
+            //System.out.println("Running");
             setupMoles();
 
             while(molesRemaining > 0){}
@@ -52,11 +52,11 @@ public class Game implements Runnable{
         int nextLocation;
 
         // Number of moles to set this round
-        molesRemaining = rng.nextInt(3) + 1;
+        molesRemaining = 1;//rng.nextInt(3) + 1;
 
         // Set the logical moles
         for(int i = 0; i < molesRemaining;){
-            nextLocation = rng.nextInt(9);
+            nextLocation = 0;//rng.nextInt(9);
             if(moleHoles[nextLocation] == NO_MOLE) {
                 moleHoles[nextLocation] = MOLE;
                 field.drawMoleAt(nextLocation);

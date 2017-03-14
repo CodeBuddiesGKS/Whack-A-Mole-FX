@@ -20,21 +20,27 @@ public class FieldController implements Initializable {
 
     private Mole[] moles = new Mole[Game.TOTAL_MOLES];
 
-    private Image moleImage,
-                  blankImage;
+    private Image blankImage;
 
     private Game game;
 
     public void drawMoleAt(int index){
-//        moles[index].setImage(moleImage);
+        System.out.println("Draw");
+        while(moles[index].isFading()){
+            System.out.println("Fading");
+        }
+        System.out.println("Remerge");
+        moles[index].emerge();
     }
 
     public void handleImagePress(MouseEvent event){
         ImageView source = (ImageView) event.getTarget();
 
         for(int i = 0; i < moles.length; i++){
-            if(moles[i].getImageView() == source)
+            if(moles[i].getImageView() == source) {
+                game.whackMole(i);
                 moles[i].whack();
+            }
         }
 
     }
@@ -47,7 +53,7 @@ public class FieldController implements Initializable {
     }
 
     public void setupGame(){
-        moleImage = new Image("mole.png");
+
         blankImage = new WritableImage(140,140);
 
         // Create blank image views and add them to moleGridPane
@@ -65,12 +71,12 @@ public class FieldController implements Initializable {
             moles[i] = new Mole(view);
         }
 
-        for(int i = 0; i < moles.length; i++) {
-            System.out.println("Emerging");
-            moles[i].emerge();
-        }
+//        for(int i = 0; i < moles.length; i++) {
+//            System.out.println("Emerging");
+//            moles[i].emerge();
+//        }
 
-//        game = new Game(this);
-//        game.start();
+        game = new Game(this);
+        game.start();
     }
 }
