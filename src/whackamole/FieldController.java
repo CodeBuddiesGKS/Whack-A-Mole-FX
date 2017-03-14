@@ -34,7 +34,7 @@ public class FieldController implements Initializable {
 
         for(int i = 0; i < moles.length; i++){
             if(moles[i].getImageView() == source)
-                System.out.println("Whack!");
+                moles[i].whack();
         }
 
     }
@@ -64,7 +64,6 @@ public class FieldController implements Initializable {
             ImageView view = (ImageView) imageViews.get(i);
             moles[i] = new Mole(view);
         }
-
 
         for(int i = 0; i < moles.length; i++) {
             System.out.println("Emerging");
