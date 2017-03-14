@@ -27,6 +27,11 @@ public class Game implements Runnable{
         molesRemaining--;
     }
 
+    public void removeMoleAt(int index){
+        moleHoles[index] = false;
+        molesRemaining--;
+    }
+
     public void start(){
         if(isRunning)
             return;
@@ -53,11 +58,11 @@ public class Game implements Runnable{
         int nextLocation;
 
         // Number of moles to set this round
-        molesRemaining = rng.nextInt(3) + 1;
+        molesRemaining = 8;//rng.nextInt(8) + 3;
 
         // Set the logical moles
         for(int i = 0; i < molesRemaining;){
-            nextLocation = rng.nextInt(9);
+            nextLocation = rng.nextInt(TOTAL_MOLES);
             if(moleHoles[nextLocation] == NO_MOLE) {
                 moleHoles[nextLocation] = MOLE;
                 field.drawMoleAt(nextLocation);

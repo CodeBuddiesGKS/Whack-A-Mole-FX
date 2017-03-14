@@ -57,6 +57,7 @@ public class FieldController implements Initializable {
 
     public void setupGame(){
 
+        game = new Game(this);
         blankImage = new WritableImage(140,140);
 
         // Create blank image views and add them to moleGridPane
@@ -71,14 +72,13 @@ public class FieldController implements Initializable {
         ObservableList<Node> imageViews = moleGridPane.getChildren();
         for(int i = 0; i < moles.length; i++){
             ImageView view = (ImageView) imageViews.get(i);
-            moles[i] = new Mole(view);
+            moles[i] = new Mole(view, game, i);
         }
 
-        game = new Game(this);
 
-        for(int i = 0; i < moles.length; i++)
-            moles[i].emerge();
+//        for(int i = 0; i < moles.length; i++)
+//            moles[i].emerge();
 
-//        game.start();
+        game.start();
     }
 }

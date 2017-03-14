@@ -18,14 +18,24 @@ public class Mole {
     private boolean isFading,
                     isEmerging,
                     isIdle,
+                    isLaughing,
                     loaded;
 
-    public Mole(ImageView imageView){
+    private Game game;
+    private int location;
+
+    public Mole(ImageView imageView, Game g, int location){
         view = imageView;
+        game = g;
+        this.location = location;
     }
 
     public ImageView getImageView(){
         return view;
+    }
+
+    public int getLocation(){
+        return location;
     }
 
     public void emerge(){
@@ -35,7 +45,7 @@ public class Mole {
 
         isEmerging = true;
 
-        emerge = new SpriteAnimation(view, Duration.millis(2500),
+        emerge = new SpriteAnimation(view, Duration.millis(2000),
                 45, 8,
                 0, 420,
                 140, 140 );
@@ -58,7 +68,7 @@ public class Mole {
         System.out.println("Idle play");
         isIdle = true;
 
-        idle = new SpriteAnimation(view, Duration.millis(3000),
+        idle = new SpriteAnimation(view, Duration.millis(1500),
                 6, 6,
                 0, 1540,
                 140, 140 );
@@ -69,11 +79,14 @@ public class Mole {
     }
 
     public void whack(){
-        if(!isIdle)
+        if(!isIdle && !isLaughing)
             return;
 
         if(isIdle)
             idle.stop();
+
+        if(isLaughing)
+            laugh.stop();
 
         isFading = true;
 
@@ -102,6 +115,8 @@ public class Mole {
         if(!isIdle)
             return;
 
+        isLaughing = true;
+
         laugh = new SpriteAnimation(view, Duration.millis(1000),
                 4, 4,
                 0, 1260,
@@ -120,6 +135,7 @@ public class Mole {
         if(isIdle || isEmerging & isFading)
             return;
 
+        game.removeMoleAt(location);
         emerge.setRate(-1.0);
         emerge.setOnFinished(event -> view.setImage(null));
         emerge.play();
