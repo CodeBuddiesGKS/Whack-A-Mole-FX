@@ -18,7 +18,7 @@ public class FieldController implements Initializable {
     @FXML
     private GridPane moleGridPane;
 
-    private ImageView[] moleImages = new ImageView[Game.TOTAL_MOLES];
+    private Mole[] moles = new Mole[Game.TOTAL_MOLES];
 
     private Image moleImage,
                   blankImage;
@@ -26,22 +26,29 @@ public class FieldController implements Initializable {
     private Game game;
 
     public void drawMoleAt(int index){
-        moleImages[index].setImage(moleImage);
+//        moles[index].setImage(moleImage);
     }
 
     public void handleImagePress(MouseEvent event){
         ImageView source = (ImageView) event.getTarget();
-        for(int i = 0; i < moleImages.length; i++)
-            if(source == moleImages[i] && moleImages[i].getImage() == moleImage) {
-                moleImages[i].setImage(blankImage);
-                game.whackMole(i);
-            }
+
+        for(int i = 0; i < moles.length; i++){
+            if(moles[i].getImageView() == source)
+                System.out.println("Whack!");
+        }
+
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        blankImage = new WritableImage(50,50);
+
+        setupGame();
+
+    }
+
+    public void setupGame(){
         moleImage = new Image("mole.png");
+        blankImage = new WritableImage(140,140);
 
         // Create blank image views and add them to moleGridPane
         for(int row = 0; row < 3; row++)
@@ -53,12 +60,18 @@ public class FieldController implements Initializable {
 
         // Get references to all image views
         ObservableList<Node> imageViews = moleGridPane.getChildren();
-        for(int i = 0; i < moleImages.length; i++){
+        for(int i = 0; i < moles.length; i++){
             ImageView view = (ImageView) imageViews.get(i);
-            moleImages[i] = view;
+            moles[i] = new Mole(view);
         }
 
-        game = new Game(this);
-        game.start();
+
+        for(int i = 0; i < moles.length; i++) {
+            System.out.println("Emerging");
+            moles[i].emerge();
+        }
+
+//        game = new Game(this);
+//        game.start();
     }
 }

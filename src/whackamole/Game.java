@@ -9,7 +9,7 @@ public class Game implements Runnable{
                                  NO_MOLE = false;
 
     private boolean[] moleHoles = new boolean[TOTAL_MOLES];
-    private volatile int molesThisRound;
+    private volatile int molesRemaining;
 
     private boolean isRunning;
     private Random rng = new Random();
@@ -22,7 +22,7 @@ public class Game implements Runnable{
 
     public void whackMole(int index){
         moleHoles[index] = NO_MOLE;
-        molesThisRound--;
+        molesRemaining--;
     }
 
     public void start(){
@@ -43,7 +43,7 @@ public class Game implements Runnable{
             System.out.println("Running");
             setupMoles();
 
-            while(molesThisRound > 0){}
+            while(molesRemaining > 0){}
         }
     }
 
@@ -52,10 +52,10 @@ public class Game implements Runnable{
         int nextLocation;
 
         // Number of moles to set this round
-        molesThisRound = rng.nextInt(3) + 1;
+        molesRemaining = rng.nextInt(3) + 1;
 
         // Set the logical moles
-        for(int i = 0; i < molesThisRound;){
+        for(int i = 0; i < molesRemaining;){
             nextLocation = rng.nextInt(9);
             if(moleHoles[nextLocation] == NO_MOLE) {
                 moleHoles[nextLocation] = MOLE;
