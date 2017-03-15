@@ -19,7 +19,7 @@ public class Mole {
                     isEmerging,
                     isIdle,
                     isLaughing,
-                    loaded;
+                    isLeaving;
 
     private Game game;
     private int location;
@@ -57,7 +57,6 @@ public class Mole {
 
         view.setImage(null);
         view.setImage(new Image("sprites.png"));
-        view.setOpacity(1.0);
         emerge.play();
     }
 
@@ -73,7 +72,9 @@ public class Mole {
                 0, 1540,
                 140, 140 );
         idle.setCycleCount(3);
-        idle.setOnFinished(endIdleEvent -> laugh());
+        idle.setOnFinished(endIdleEvent -> {
+            laugh();
+        });
         //System.out.println("Idle");
         idle.play();
     }
@@ -101,6 +102,7 @@ public class Mole {
                 isFading = false;
                 isIdle = false;
                 isEmerging = false;
+                view.setImage(null);
             });
             fade.setFromValue(1.0);
             fade.setToValue(0.0);
@@ -115,6 +117,7 @@ public class Mole {
         if(!isIdle)
             return;
 
+        isIdle = false;
         isLaughing = true;
 
         laugh = new SpriteAnimation(view, Duration.millis(1000),
@@ -123,7 +126,6 @@ public class Mole {
                 140, 140 );
         laugh.setCycleCount(3);
         laugh.setOnFinished(endIdleEvent -> {
-            isIdle = false;
             leave();
         });
         //System.out.println("Idle");
@@ -132,12 +134,18 @@ public class Mole {
     }
 
     public void leave(){
-        if(isIdle || isEmerging & isFading)
+        if(!isLaughing)
             return;
 
-        game.removeMoleAt(location);
+        isLaughing = false;
+        isLeaving = true;
+
         emerge.setRate(-1.0);
-        emerge.setOnFinished(event -> view.setImage(null));
+        emerge.setOnFinished(event -> {
+            view.setImage(null);
+            game.removeMoleAt(location);
+            isLeaving = false;
+        });
         emerge.play();
     }
 
@@ -151,6 +159,10 @@ public class Mole {
 
     public boolean isIdle(){
         return isIdle;
+    }
+
+    public boolean isLeaving(){
+        return isLeaving;
     }
 
 }

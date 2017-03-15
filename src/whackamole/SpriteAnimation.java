@@ -39,8 +39,8 @@ public class SpriteAnimation extends Transition {
         if(currentFrame != lastFrame){
             final int x = (currentFrame % columns) * width  + xOffset;
             final int y = (currentFrame / columns) * height + yOffset;
-            //System.out.println(x + " " + y);
             imageView.setViewport(new Rectangle2D(x, y, width, height));
+            imageView.setOpacity(1.0);
             lastFrame = currentFrame;
         }
      }

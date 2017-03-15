@@ -38,14 +38,13 @@ public class FieldController implements Initializable {
 
         for(int i = 0; i < moles.length; i++){
             if(moles[i].getImageView() == source) {
-                if(!moles[i].isEmerging() && !moles[i].isFading()) {
+                if(!moles[i].isEmerging() && !moles[i].isFading() && !moles[i].isLeaving()) {
                     game.whackMole(i);
                     moles[i].whack();
                     whackCount.setText(Integer.toString(Integer.parseInt(whackCount.getText()) + 1));
                 }
             }
         }
-
     }
 
     @Override
