@@ -28,9 +28,28 @@ public class FieldController implements Initializable {
 
     private Game game;
 
+    public void startScreen(){
+        moles[2].walk();
+    }
+
+    public void endScreen(){
+        while(Mole.anyAnimating()){}
+        System.out.println("End game");
+        moles[2].endGameEmerge();
+        whackCount.setText(Integer.toString(game.getMolesWhacked()));
+    }
+
     public void drawMoleAt(int index){
-        while(moles[index].isFading()){System.out.println("Fade");}
+        while(moles[index].isFading()){}
         moles[index].emerge();
+    }
+
+    public void moleMissed(){
+        String message = "";
+        for(int i = 0; i < game.getMolesMissed(); i++)
+            message += "X";
+
+        whackCount.setText(message);
     }
 
     public void handleImagePress(MouseEvent event){
@@ -38,10 +57,15 @@ public class FieldController implements Initializable {
 
         for(int i = 0; i < moles.length; i++){
             if(moles[i].getImageView() == source) {
-                if(!moles[i].isEmerging() && !moles[i].isFading() && !moles[i].isLeaving()) {
+                if(!moles[i].isEmerging() && !moles[i].isFading() && !moles[i].isLeaving() && !moles[i].isWalking()) {
                     game.whackMole(i);
                     moles[i].whack();
-                    whackCount.setText(Integer.toString(Integer.parseInt(whackCount.getText()) + 1));
+                    whackCount.setText(Integer.toString(game.getMolesWhacked() + 1));
+                }
+                if(moles[i].isWalking()) {
+                    moles[i].stopWalking();
+                    moles[i].standLaugh();
+                    whackCount.setText("0");
                 }
             }
         }
@@ -49,9 +73,8 @@ public class FieldController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         setupGame();
-
+        startScreen();
     }
 
     public void setupGame(){
@@ -73,11 +96,5 @@ public class FieldController implements Initializable {
             ImageView view = (ImageView) imageViews.get(i);
             moles[i] = new Mole(view, game, i);
         }
-
-
-//        for(int i = 0; i < moles.length; i++)
-//            moles[i].emerge();
-
-        game.start();
     }
 }

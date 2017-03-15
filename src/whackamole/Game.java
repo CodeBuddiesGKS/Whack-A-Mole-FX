@@ -6,12 +6,16 @@ public class Game implements Runnable{
 
     public static final int ROWS = 3,
                             COLUMNS = 5,
-                            TOTAL_MOLES = ROWS * COLUMNS;
+                            TOTAL_MOLES = ROWS * COLUMNS,
+                            MAX_MOLES_MISSED = 3;
+
     private static final boolean MOLE = true,
                                  NO_MOLE = false;
 
     private boolean[] moleHoles = new boolean[TOTAL_MOLES];
-    private volatile int molesRemaining;
+    private volatile int molesRemaining,
+                         molesMissed,
+                         molesWhacked;
 
     private boolean isRunning;
     private Random rng = new Random();
@@ -25,11 +29,25 @@ public class Game implements Runnable{
     public void whackMole(int index){
         moleHoles[index] = NO_MOLE;
         molesRemaining--;
+        molesWhacked++;
     }
 
-    public void removeMoleAt(int index){
+    public void moleLeftAt(int index){
+        if(molesMissed >= MAX_MOLES_MISSED)
+            return;
+
         moleHoles[index] = false;
         molesRemaining--;
+        molesMissed++;
+        field.moleMissed();
+    }
+
+    public int getMolesWhacked(){
+        return molesWhacked;
+    }
+
+    public int getMolesMissed(){
+        return molesMissed;
     }
 
     public void start(){
@@ -49,8 +67,15 @@ public class Game implements Runnable{
         while(isRunning){
             setupMoles();
 
-            while(molesRemaining > 0){}
+            while(molesRemaining > 0 && molesMissed < MAX_MOLES_MISSED){}
+
+            if(molesMissed >= MAX_MOLES_MISSED) {
+                isRunning = false;
+                field.endScreen();
+            }
         }
+
+        System.out.println("Game Over");
     }
 
     private void setupMoles(){

@@ -11,8 +11,8 @@
 
     <top>
         <HBox alignment="bottom_right" >
-            <padding><Insets right="220" top="30"/></padding>
-            <Text fx:id="whackCount" text="0">
+            <padding><Insets right="195" top="30"/></padding>
+            <Text fx:id="whackCount" text="">
                 <font>
                     <Font name="Arial Black" size="36.0"/>
                 </font>
